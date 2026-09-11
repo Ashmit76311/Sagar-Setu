@@ -1,0 +1,92 @@
+# Sagar Setu — Docker Compose Configuration
+# One-command local development setup: docker-compose up
+
+services:
+  # ──────────────────────────────────────────────
+  # PostgreSQL 15 + TimescaleDB
+  # ──────────────────────────────────────────────
+  postgres:
+    image: timescale/timescaledb:latest-pg15
+    container_name: sagarsetu-postgres
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-sagarsetu}
+      POSTGRES_USER: ${POSTGRES_USER:-sagarsetu}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-sagarsetu_dev_2024}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./db/migrations:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-sagarsetu}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  # ──────────────────────────────────────────────
+  # Redis (cache, session store)
+  # ──────────────────────────────────────────────
+  redis:
+    image: redis:7-alpine
+    container_name: sagarsetu-redis
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  # ──────────────────────────────────────────────
+  # FastAPI Backend (API Gateway)
+  # ──────────────────────────────────────────────
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: sagarsetu-backend
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://${POSTGRES_USER:-sagarsetu}:${POSTGRES_PASSWORD:-sagarsetu_dev_2024}@postgres:5432/${POSTGRES_DB:-sagarsetu}
+      - DATABASE_URL_SYNC=postgresql://${POSTGRES_USER:-sagarsetu}:${POSTGRES_PASSWORD:-sagarsetu_dev_2024}@postgres:5432/${POSTGRES_DB:-sagarsetu}
+      - REDIS_URL=redis://redis:6379/0
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY:-dev-secret-key-change-in-production}
+      - JWT_ALGORITHM=${JWT_ALGORITHM:-HS256}
+      - JWT_EXPIRY_MINUTES=${JWT_EXPIRY_MINUTES:-60}
+      - ENVIRONMENT=development
+    ports:
+      - "${BACKEND_PORT:-8000}:8000"
+    volumes:
+      - ./backend:/app
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # ──────────────────────────────────────────────
+  # React + Vite Frontend (Dev Server)
+  # ──────────────────────────────────────────────
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: sagarsetu-frontend
+    environment:
+      - VITE_API_URL=http://localhost:${BACKEND_PORT:-8000}
+    ports:
+      - "${FRONTEND_PORT:-5173}:5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  redis_data:

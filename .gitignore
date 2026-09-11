@@ -1,0 +1,48 @@
+# ── Environment ────────────────────
+.env
+.env.local
+.env.production
+
+# ── Python ─────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+.eggs/
+*.egg
+.venv/
+venv/
+env/
+
+# ── Node.js ────────────────────────
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ── Build artifacts ────────────────
+frontend/dist/
+*.log
+
+# ── IDE ────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# ── Docker ─────────────────────────
+postgres_data/
+redis_data/
+
+# ── ML model artifacts ────────────
+backend/forecasting/models/*.pkl
+backend/forecasting/models/*.joblib
+
+# ── Unnecessary files ────────────
+docs/
+explain.md
