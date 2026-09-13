@@ -1,97 +1,168 @@
-# 🚢 Sagar Setu
+# Sagar Setu - (Intelligent Freight Forecasting)
 
-**Intelligent Freight Forecasting & Vessel Chartering Optimization Platform**
+[![Python 3.11+](https://img.shields.io/badge/Python-3.11+-blue.svg)](https://www.python.org/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-Latest-green.svg)](https://fastapi.tiangolo.com/)
+[![React](https://img.shields.io/badge/React-18-blue.svg)](https://react.dev/)
+[![Docker](https://img.shields.io/badge/Docker-Latest-orange.svg)](https://www.docker.com/)
 
-> Smart India Hackathon 2026 — Problem Statement SIH26006
-> Ministry of Steel, Government of India | Transportation & Logistics
+## 📋 Overview
+
+**Sagar Setu** is an intelligent, AI-powered software platform developed for the Ministry of Steel (Smart India Hackathon 2026 - SIH26006). It acts as a decision-support "Smart Assistant" that predicts future shipping costs, recommends the perfect ship size, and builds a master schedule to minimize total costs for importing raw materials.
+
+It forecasts freight rates, recommends optimal vessel types, generates optimized procurement schedules, and provides scenario simulation for what-if analysis. The platform is built using a modern stack featuring **React 18**, **FastAPI**, **Machine Learning (SARIMA, Prophet, XGBoost)**, and **Optimization (PuLP)**.
+
+LIVE DEMO - [Link to Live Demo (If Deployed)]
 
 ---
 
-## Overview
+## 🎨 Application Preview
 
-Sagar Setu is a decision-support platform that:
-- **Forecasts freight rates** for overseas-to-East-Coast-India bulk shipping routes
-- **Recommends optimal vessel type & charter strategy** for cargo orders
-- **Generates optimized procurement + shipping schedules** minimizing total landed cost
-- **Provides scenario simulation** for what-if analysis
-- **Delivers a unified dashboard** for Ministry/PSU planners
+### Dashboard Command Center
+![Dashboard Preview](./docs/assets/dashboard.png)
 
-## Tech Stack
+### Freight Forecast
+![Forecast Preview](./docs/assets/forecast.png)
 
-| Layer | Technology |
-|---|---|
-| Frontend | React 18 + TypeScript + Vite + TailwindCSS + Recharts |
-| Backend | FastAPI (Python) |
-| ML/Forecasting | SARIMA + Prophet + XGBoost (ensemble) |
-| Optimization | PuLP (CBC solver) |
-| Database | PostgreSQL 15 + TimescaleDB |
-| Cache | Redis |
-| Containerization | Docker + docker-compose |
+---
 
-## Quick Start
+## 🎯 Key Features
 
-### Prerequisites
-- Docker & Docker Compose
-- Node.js 20+ (for frontend dev outside Docker)
-- Python 3.11+ (for backend dev outside Docker)
+### 🧠 Intelligent Freight Forecasting
+- **Multi-Model AI**: Uses SARIMA, Prophet, and XGBoost to analyze historical data and predict future prices.
+- **Route & Vessel Selection**: Specify routes (e.g., Australia to Visakhapatnam) and vessel classes (Capesize, Panamax).
+- **Time Horizons**: Predict rates for 7, 30, or 90 days into the future.
 
-### One-Command Setup
+### ⚓ Optimal Vessel Chartering
+- **Smart Recommendations**: Automatically suggests the best ship size based on cargo orders and port draft restrictions.
+- **Master Scheduling**: Groups multiple small orders into larger shipments using Linear Programming to minimize costs.
 
-```bash
-# 1. Clone the repo
-git clone <repo-url> && cd sagar-setu
+### 📊 Scenario Simulation
+- **"What-If" Analysis**: Test disaster scenarios (e.g., fuel price spikes, port closures) before they happen.
+- **Dynamic Recalculation**: Automatically suggests alternative plans to keep costs down during crises.
 
-# 2. Copy environment config
-cp .env.example .env
+### 🔔 Proactive Alerts
+- **24/7 Market Monitoring**: Automated warnings when freight rates drop, suggesting optimal booking times.
 
-# 3. Start all services
-docker-compose up --build
+---
+
+## 🏗️ Architecture Stack
+
+| Component | Technology |
+|-----------|-----------|
+| **Frontend Framework** | React 18 + TypeScript + Vite + TailwindCSS |
+| **Backend API Gateway** | FastAPI (Python) |
+| **ML/Forecasting Engine** | SARIMA, Prophet, XGBoost |
+| **Optimization Engine** | PuLP (CBC solver) |
+| **Relational Database** | PostgreSQL 15 + TimescaleDB |
+| **Cache & Real-time** | Redis |
+| **Deployment** | Docker & Docker Compose |
+
+### WorkFlow
+
+```mermaid
+graph TD
+    Start([__start__]) --> Gateway[API Gateway]
+    
+    Gateway -.->|Forecast Request| Forecast[Forecasting Engine]
+    Gateway -.->|Optimization Request| Optimize[Optimization Engine]
+    Gateway -.->|Simulation Request| Simulator[Scenario Simulator]
+    
+    Forecast --> DB[(TimescaleDB)]
+    Optimize --> DB
+    Simulator --> DB
+    
+    DB --> Aggregator[Data Aggregator]
+    Aggregator -.-> Gateway
+    
+    Gateway --> End([__end__])
+    
+    classDef default fill:#f3e8ff,stroke:#d8b4fe,stroke-width:2px,color:#1f2937,rx:5px,ry:5px;
+    classDef rounded fill:#c084fc,stroke:#a855f7,stroke-width:2px,color:#ffffff,rx:20px,ry:20px;
+    class Start,End rounded;
 ```
 
-Services will be available at:
-- **Frontend**: http://localhost:5173
-- **Backend API**: http://localhost:8000
+---
+
+## 📖 Usage Guide
+
+### 1. Prerequisites
+
+- Docker & Docker Compose
+- Node.js 20+ (for local frontend dev)
+- Python 3.11+ (for local backend dev)
+
+### 2. Environment Configuration
+
+Copy the `.env.example` file to create a `.env` file in the project root:
+
+```bash
+cp .env.example .env
+```
+
+### 3. Running the Application (Docker)
+
+The easiest way to run the full stack (Frontend, Backend API, PostgreSQL, Redis) is using Docker Compose:
+
+```bash
+# Build and start all services in the background
+docker-compose up --build -d
+```
+
+- **Frontend Application**: http://localhost:5173
+- **FastAPI (Backend)**: http://localhost:8000
 - **API Docs (Swagger)**: http://localhost:8000/docs
 - **PostgreSQL**: localhost:5432
 - **Redis**: localhost:6379
 
-## Project Structure
+### 4. Running Locally for Development
 
-```
-sagar-setu/
-├── frontend/                # React + TypeScript SPA
-├── backend/
-│   ├── api/                 # FastAPI gateway (auth, CRUD, routing)
-│   ├── forecasting/         # ML forecasting service
-│   ├── optimization/        # LP/MILP optimization engine
-│   └── etl/                 # Data ingestion + synthetic data generator
-├── db/
-│   ├── migrations/          # SQL migration files
-│   └── seed/                # Synthetic seed data scripts
-├── docs/                    # PRD, TRD, schema, design docs
-├── docker-compose.yml       # One-command local setup
-└── .env.example             # Environment config template
+If you prefer to run services manually for development:
+
+**Terminal 1 (Backend):**
+```bash
+cd backend
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+pip install -r requirements.txt
+python -m uvicorn api.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-## Demo Credentials
+**Terminal 2 (Frontend):**
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+---
+
+## 🔌 Core Modules & Endpoints (Backend)
+
+- `/api/` - FastAPI gateway (auth, CRUD, routing).
+- `/forecasting/` - ML forecasting service endpoints.
+- `/optimization/` - LP/MILP optimization engine.
+- `/etl/` - Data ingestion and synthetic data generation.
+- `/db/migrations/` - SQL migration files for TimescaleDB.
+
+*(See full API Docs at `http://localhost:8000/docs` for detailed endpoints)*
+
+---
+
+## 🔐 Demo Credentials
+
+Use these credentials to test different user roles on the local/live demo:
 
 | Role | Email | Password |
 |---|---|---|
-| Admin | admin@sagarsetu.gov.in | admin123 |
-| Chartering Officer | charter@sail.gov.in | charter123 |
-| Procurement Planner | planner@sail.gov.in | planner123 |
-| Viewer (Ministry) | viewer@steel.gov.in | viewer123 |
+| **Admin** | admin@sagarsetu.gov.in | admin123 |
+| **Chartering Officer** | charter@sail.gov.in | charter123 |
+| **Procurement Planner** | planner@sail.gov.in | planner123 |
+| **Viewer (Ministry)** | viewer@steel.gov.in | viewer123 |
 
-## Documentation
+---
 
-See `docs/` folder for:
-- Product Requirements (PRD)
-- Technical Requirements (TRD)
-- Application Flow
-- UI/UX Design System
-- Database Schema
-- Implementation Plan
+## 👤 Author
 
-## License
-
-Built for Smart India Hackathon 2026 — SIH26006
+**Ashmit Kumar Srivastav**
+- GitHub: [@Ashmit76311](https://github.com/Ashmit76311)
+- Project: [Sagar-Setu](https://github.com/Ashmit76311/Sagar-Setu)
