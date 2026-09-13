@@ -11,17 +11,17 @@
 
 It forecasts freight rates, recommends optimal vessel types, generates optimized procurement schedules, and provides scenario simulation for what-if analysis. The platform is built using a modern stack featuring **React 18**, **FastAPI**, **Machine Learning (SARIMA, Prophet, XGBoost)**, and **Optimization (PuLP)**.
 
-LIVE DEMO - [Link to Live Demo (If Deployed)]
 
 ---
 
 ## 🎨 Application Preview
 
-### Dashboard Command Center
-![Dashboard Preview](./docs/assets/dashboard.png)
+### Landing Page
+![Landing Page Preview](./docs/assets/Landing Page.png)
 
-### Freight Forecast
-![Forecast Preview](./docs/assets/forecast.png)
+### Dashboard Preview
+![Dashboard Preview](./docs/assets/Dashboard Preview.png)
+
 
 ---
 
@@ -163,6 +163,5 @@ Use these credentials to test different user roles on the local/live demo:
 
 ## 👤 Author
 
-**Ashmit Kumar Srivastav**
-- GitHub: [@Ashmit76311](https://github.com/Ashmit76311)
+**Team BlackOut - SIH 2026**
 - Project: [Sagar-Setu](https://github.com/Ashmit76311/Sagar-Setu)
