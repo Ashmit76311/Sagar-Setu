@@ -17,10 +17,10 @@ It forecasts freight rates, recommends optimal vessel types, generates optimized
 ## 🎨 Application Preview
 
 ### Landing Page
-![Landing Page Preview](./docs/assets/Landing Page.png)
+![Landing Page Preview](./docs/assets/Landing%20Page.png)
 
 ### Dashboard Preview
-![Dashboard Preview](./docs/assets/Dashboard Preview.png)
+![Dashboard Preview](./docs/assets/Dashboard%20Preview.png)
 
 
 ---
